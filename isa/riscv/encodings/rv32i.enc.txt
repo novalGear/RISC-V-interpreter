@@ -1,0 +1,483 @@
+# RV32I base integer instruction encodings.
+# See ../encoding-format.md and ../validation.md.
+
+extension rv32i
+
+instruction lui {
+    encoding {
+        bits[6:0] = 0b0110111
+    }
+    operands {
+        rd: reg = bits[11:7]
+        imm: bits<32> = concat(bits[31:12], 0b000000000000)
+    }
+}
+
+instruction auipc {
+    encoding {
+        bits[6:0] = 0b0010111
+    }
+    operands {
+        rd: reg = bits[11:7]
+        imm: bits<32> = concat(bits[31:12], 0b000000000000)
+    }
+}
+
+instruction jal {
+    encoding {
+        bits[6:0] = 0b1101111
+    }
+    operands {
+        rd: reg = bits[11:7]
+        imm: simm<21> = concat(bits[31], bits[19:12], bits[20], bits[30:21], 0b0)
+    }
+}
+
+instruction jalr {
+    encoding {
+        bits[6:0] = 0b1100111
+        bits[14:12] = 0b000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction beq {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b000
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction bne {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b001
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction blt {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b100
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction bge {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b101
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction bltu {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b110
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction bgeu {
+    encoding {
+        bits[6:0] = 0b1100011
+        bits[14:12] = 0b111
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<13> = concat(bits[31], bits[7], bits[30:25], bits[11:8], 0b0)
+    }
+}
+
+instruction lb {
+    encoding {
+        bits[6:0] = 0b0000011
+        bits[14:12] = 0b000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction lh {
+    encoding {
+        bits[6:0] = 0b0000011
+        bits[14:12] = 0b001
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction lw {
+    encoding {
+        bits[6:0] = 0b0000011
+        bits[14:12] = 0b010
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction lbu {
+    encoding {
+        bits[6:0] = 0b0000011
+        bits[14:12] = 0b100
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction lhu {
+    encoding {
+        bits[6:0] = 0b0000011
+        bits[14:12] = 0b101
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction sb {
+    encoding {
+        bits[6:0] = 0b0100011
+        bits[14:12] = 0b000
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<12> = concat(bits[31:25], bits[11:7])
+    }
+}
+
+instruction sh {
+    encoding {
+        bits[6:0] = 0b0100011
+        bits[14:12] = 0b001
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<12> = concat(bits[31:25], bits[11:7])
+    }
+}
+
+instruction sw {
+    encoding {
+        bits[6:0] = 0b0100011
+        bits[14:12] = 0b010
+    }
+    operands {
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+        imm: simm<12> = concat(bits[31:25], bits[11:7])
+    }
+}
+
+instruction addi {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction slti {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b010
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction sltiu {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b011
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction xori {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b100
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction ori {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b110
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction andi {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b111
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        imm: simm<12> = bits[31:20]
+    }
+}
+
+instruction slli {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b001
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        shamt: uimm<5> = bits[24:20]
+    }
+}
+
+instruction srli {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b101
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        shamt: uimm<5> = bits[24:20]
+    }
+}
+
+instruction srai {
+    encoding {
+        bits[6:0] = 0b0010011
+        bits[14:12] = 0b101
+        bits[31:25] = 0b0100000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        shamt: uimm<5> = bits[24:20]
+    }
+}
+
+instruction add {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b000
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction sub {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b000
+        bits[31:25] = 0b0100000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction sll {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b001
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction slt {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b010
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction sltu {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b011
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction xor {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b100
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction srl {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b101
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction sra {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b101
+        bits[31:25] = 0b0100000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction or {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b110
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction and {
+    encoding {
+        bits[6:0] = 0b0110011
+        bits[14:12] = 0b111
+        bits[31:25] = 0b0000000
+    }
+    operands {
+        rd: reg = bits[11:7]
+        rs1: reg = bits[19:15]
+        rs2: reg = bits[24:20]
+    }
+}
+
+instruction fence {
+    encoding {
+        bits[6:0] = 0b0001111
+        bits[14:12] = 0b000
+        bits[31:28] = 0b0000
+    }
+    operands {
+        pred: bits<4> = bits[27:24]
+        succ: bits<4> = bits[23:20]
+    }
+}
+
+instruction ecall {
+    encoding {
+        bits[31:0] = 0b00000000000000000000000001110011
+    }
+    operands {
+    }
+}
+
+instruction ebreak {
+    encoding {
+        bits[31:0] = 0b00000000000100000000000001110011
+    }
+    operands {
+    }
+}

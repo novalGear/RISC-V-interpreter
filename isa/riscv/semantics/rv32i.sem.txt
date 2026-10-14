@@ -1,0 +1,212 @@
+# RV32I base integer instruction semantics.
+# See ../semantics-language.md and ../validation.md.
+
+extension rv32i
+
+# Upper immediates
+
+instruction lui {
+    write_reg(rd, imm);
+}
+
+instruction auipc {
+    write_reg(rd, read_pc() + imm);
+}
+
+# Jumps
+
+instruction jal {
+    let old_pc = read_pc();
+    let target = old_pc + imm;
+    write_reg(rd, old_pc + 4);
+    set_next_pc(target);
+}
+
+instruction jalr {
+    let old_pc = read_pc();
+    let base = read_reg(rs1);
+    let target = clear_low_bit(base + imm);
+    write_reg(rd, old_pc + 4);
+    set_next_pc(target);
+}
+
+# Conditional branches
+
+instruction beq {
+    if read_reg(rs1) == read_reg(rs2) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+instruction bne {
+    if read_reg(rs1) != read_reg(rs2) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+instruction blt {
+    if signed_less(read_reg(rs1), read_reg(rs2)) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+instruction bge {
+    if !signed_less(read_reg(rs1), read_reg(rs2)) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+instruction bltu {
+    if unsigned_less(read_reg(rs1), read_reg(rs2)) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+instruction bgeu {
+    if !unsigned_less(read_reg(rs1), read_reg(rs2)) {
+        set_next_pc(read_pc() + imm);
+    }
+}
+
+# Loads
+
+instruction lb {
+    let address = read_reg(rs1) + imm;
+    let value = load_s8(address);
+    write_reg(rd, value);
+}
+
+instruction lh {
+    let address = read_reg(rs1) + imm;
+    let value = load_s16(address);
+    write_reg(rd, value);
+}
+
+instruction lw {
+    let address = read_reg(rs1) + imm;
+    let value = load_u32(address);
+    write_reg(rd, value);
+}
+
+instruction lbu {
+    let address = read_reg(rs1) + imm;
+    let value = load_u8(address);
+    write_reg(rd, value);
+}
+
+instruction lhu {
+    let address = read_reg(rs1) + imm;
+    let value = load_u16(address);
+    write_reg(rd, value);
+}
+
+# Stores
+
+instruction sb {
+    let address = read_reg(rs1) + imm;
+    store8(address, read_reg(rs2));
+}
+
+instruction sh {
+    let address = read_reg(rs1) + imm;
+    store16(address, read_reg(rs2));
+}
+
+instruction sw {
+    let address = read_reg(rs1) + imm;
+    store32(address, read_reg(rs2));
+}
+
+# Immediate arithmetic and logical operations
+
+instruction addi {
+    write_reg(rd, read_reg(rs1) + imm);
+}
+
+instruction slti {
+    write_reg(rd, word_from_bool(signed_less(read_reg(rs1), imm)));
+}
+
+instruction sltiu {
+    write_reg(rd, word_from_bool(unsigned_less(read_reg(rs1), imm)));
+}
+
+instruction xori {
+    write_reg(rd, read_reg(rs1) ^ imm);
+}
+
+instruction ori {
+    write_reg(rd, read_reg(rs1) | imm);
+}
+
+instruction andi {
+    write_reg(rd, read_reg(rs1) & imm);
+}
+
+instruction slli {
+    write_reg(rd, shift_left(read_reg(rs1), shamt));
+}
+
+instruction srli {
+    write_reg(rd, shift_right_logical(read_reg(rs1), shamt));
+}
+
+instruction srai {
+    write_reg(rd, shift_right_arithmetic(read_reg(rs1), shamt));
+}
+
+# Register arithmetic and logical operations
+
+instruction add {
+    write_reg(rd, read_reg(rs1) + read_reg(rs2));
+}
+
+instruction sub {
+    write_reg(rd, read_reg(rs1) - read_reg(rs2));
+}
+
+instruction sll {
+    write_reg(rd, shift_left(read_reg(rs1), read_reg(rs2)));
+}
+
+instruction slt {
+    write_reg(rd, word_from_bool(signed_less(read_reg(rs1), read_reg(rs2))));
+}
+
+instruction sltu {
+    write_reg(rd, word_from_bool(unsigned_less(read_reg(rs1), read_reg(rs2))));
+}
+
+instruction xor {
+    write_reg(rd, read_reg(rs1) ^ read_reg(rs2));
+}
+
+instruction srl {
+    write_reg(rd, shift_right_logical(read_reg(rs1), read_reg(rs2)));
+}
+
+instruction sra {
+    write_reg(rd, shift_right_arithmetic(read_reg(rs1), read_reg(rs2)));
+}
+
+instruction or {
+    write_reg(rd, read_reg(rs1) | read_reg(rs2));
+}
+
+instruction and {
+    write_reg(rd, read_reg(rs1) & read_reg(rs2));
+}
+
+# Ordering and environment
+
+instruction fence {
+    memory_fence(pred, succ);
+}
+
+instruction ecall {
+    environment_call();
+}
+
+instruction ebreak {
+    breakpoint();
+}

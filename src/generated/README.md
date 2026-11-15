@@ -40,20 +40,20 @@ constants in `IsaNames`.
 
 ## Indexing contract
 
-Generated instruction kinds are dense, zero-based ordinals. Entry `i` in
-`InstructionNames` is the canonical mnemonic of instruction kind `i`. The
-ordering comes from the validated generator model and never from filesystem
-discovery order. Ordinal values are internal indexes and are not stable
-serialization identifiers.
+Generated executable instruction kinds are dense, zero-based ordinals. Entry
+`i` in `InstructionNames` is the canonical mnemonic of executable instruction
+kind `i`. The ordering comes from the validated generator model and never from
+filesystem discovery order. Ordinal values are internal indexes and are not
+stable serialization identifiers.
 
 Entry `i` in `RegisterNames` is the canonical architectural name of register
 file index `i`. For RV32I, the table contains `x0` through `x31`. ABI names such
 as `zero`, `ra`, and `sp` are aliases and do not replace these architectural
 names.
 
-The generator must verify that every valid instruction kind and register index
-has exactly one corresponding name. Count or sentinel enum values, if any, do
-not receive table entries.
+The generator must verify that every executable instruction kind and register
+index has exactly one corresponding name. The illegal-instruction dispatch kind
+and count or sentinel enum values do not receive table entries.
 
 An index may be used only with names generated for the same ISA configuration.
 `IsaNames` performs no bounds checking; generated decoding and validated runtime
@@ -85,38 +85,81 @@ the strings in `IsaNames`.
 
 ## Decoder and executor
 
-`DecodedInstruction` is a handwritten RISC-V type in
-`src/isa/riscv/decoded_instruction.hpp`. Generated decoding and execution code
-use it as their shared internal representation.
+The generator owns the definitions of `riscv::InstrKind` and
+`riscv::DecodedInstr`. `InstrKind` uses `std::uint8_t` as its underlying type.
+Executable values are dense, zero-based indexes followed by an
+illegal-instruction dispatch value. `DecodedInstr` exposes its `kind` and stores
+the decoded operands required by the corresponding generated executor. Its
+operand-storage representation is a generator implementation detail shared by
+generated decoders and executors.
 
-`InterpreterEngine::decode` and `InterpreterEngine::execute` remain handwritten
-dispatch shells. Their declarations belong to the engine interface; separate
-public `decode.hpp` and `execute.hpp` files are unnecessary.
+The handwritten engine defines the integration signatures in `src/engine.hpp`:
 
-The generator emits private implementation fragments:
+```cpp
+using DecoderFn = DecodedInstr (*)(RawInstr);
+using ExecutorFn = void (*)(InterpreterEngine&, const DecodedInstr&);
+```
+
+Generated function declarations and dispatch tables must use these aliases.
+They must not define competing function signatures.
+
+The generator emits the following interface under `riscv::generated`:
+
+```cpp
+inline constexpr std::array<DecoderFn, 128> DecoderTable{
+    /* one generated opcode-group decoder per entry */
+};
+inline constexpr std::array<ExecutorFn, InstrKindCount> ExecutorTable{
+    /* one generated executor per instruction kind */
+};
+```
+
+`DecoderTable` is indexed by the seven-bit major opcode. Every one of its 128
+entries must be callable. An unallocated opcode selects an illegal-instruction
+decoder rather than a null function pointer.
+
+An opcode-group decoder receives the complete raw instruction. It validates all
+remaining fixed fields, determines the final `InstrKind`, reconstructs
+immediates, and extracts typed operands. Encodings unsupported within an
+otherwise allocated opcode group must also produce illegal-instruction
+handling. Declaration order must never resolve overlapping encodings.
+
+`ExecutorTable` is indexed by `DecodedInstr::kind`. It contains exactly one
+callable entry for every possible kind, including an illegal-instruction
+executor. A generated executor receives the engine and decoded instruction,
+reads its operands, and implements the declared semantics through the public
+`InterpreterEngine` primitive operations.
+
+The handwritten dispatch shells remain:
+
+```cpp
+const auto opcode = static_cast<std::size_t>(raw & 0x7fU);
+auto instruction = generated::DecoderTable[opcode](raw);
+
+const auto index = static_cast<std::size_t>(instruction.kind);
+generated::ExecutorTable[index](engine, instruction);
+```
+
+Generated executors must never access `MachineState`, register storage, memory,
+or the program counter directly. Register-zero behavior, byte order, access
+checks, environment behavior, and architectural arithmetic details belong to
+the handwritten engine primitives.
+
+The expected generated files are:
 
 ```text
 src/generated/riscv/
 ├── instruction_kind.hpp
-├── registers.hpp
+├── decoded_instr.hpp
 ├── names.hpp
+├── dispatch_tables.hpp
 ├── decode_impl.inc
 └── execute_impl.inc
 ```
 
-`decode_impl.inc` contains operand extraction, immediate reconstruction,
-opcode-group decoders, illegal-encoding selection, and the opcode dispatch
-table. The handwritten decoder extracts the major opcode and invokes the
-selected generated function.
+`dispatch_tables.hpp` includes the generated implementation fragments before
+defining the tables, so `engine.cpp` needs to include only that generated
+header. No other handwritten source includes the implementation fragments.
 
-`execute_impl.inc` contains one semantic function per instruction and the
-`InstructionKind` dispatch table. The handwritten executor indexes that table
-and invokes the selected generated function.
-
-Dispatch tables perform selection; they do not replace instruction behavior.
-Decoder leaf functions are generated from encoding declarations, and executor
-leaf functions are generated from semantic declarations. Machine state, memory,
-exception handling, and semantic primitive implementations remain handwritten.
-
-Generated implementation fragments are included only by their corresponding
-`.cpp` files and are not part of the public C++ interface.
+Generated files are an internal integration boundary. Consumers execute code
+through `InterpreterEngine`; they do not invoke generated functions directly.

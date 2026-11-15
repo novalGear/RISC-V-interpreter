@@ -7,3 +7,6 @@
 [submodule "third_party/spdlog"]
 	path = third_party/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "third_party/riscv-interpreter-task"]
+	path = third_party/riscv-interpreter-task
+	url = https://gitlab.com/iDang3r/riscv-interpreter-task

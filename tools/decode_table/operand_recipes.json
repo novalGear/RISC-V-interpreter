@@ -1,0 +1,293 @@
+{
+  "schema_version": 3,
+  "target": "rv32imf_zbb-canonical",
+  "upstream_extensions": ["rv_i", "rv32_i", "rv_m", "rv_f", "rv_zbb", "rv32_zbb"],
+  "layouts": {
+    "none": {
+      "operands": [],
+      "format_tokens": [{"kind": "mnemonic"}],
+      "intentionally_ignored_fields": []
+    },
+    "r": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}],
+      "intentionally_ignored_fields": []
+    },
+    "r_unary": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}],
+      "intentionally_ignored_fields": []
+    },
+    "i": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 12, "interpretation": "signed", "pieces": [{"field": "imm12", "field_lsb": 0, "width": 12, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}],
+      "intentionally_ignored_fields": []
+    },
+    "shift": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "shamt", "width": 5, "interpretation": "unsigned", "pieces": [{"field": "shamtw", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "shamt"}],
+      "intentionally_ignored_fields": []
+    },
+    "load": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 12, "interpretation": "signed", "pieces": [{"field": "imm12", "field_lsb": 0, "width": 12, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}, {"kind": "literal", "text": "("}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ")"}],
+      "intentionally_ignored_fields": []
+    },
+    "store": {
+      "operands": [
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 12, "interpretation": "signed", "pieces": [{"field": "imm12hi", "field_lsb": 0, "width": 7, "destination_lsb": 5}, {"field": "imm12lo", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rs2"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}, {"kind": "literal", "text": "("}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ")"}],
+      "intentionally_ignored_fields": []
+    },
+    "branch": {
+      "operands": [
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 13, "interpretation": "signed", "pieces": [{"field": "bimm12hi", "field_lsb": 6, "width": 1, "destination_lsb": 12}, {"field": "bimm12lo", "field_lsb": 0, "width": 1, "destination_lsb": 11}, {"field": "bimm12hi", "field_lsb": 0, "width": 6, "destination_lsb": 5}, {"field": "bimm12lo", "field_lsb": 1, "width": 4, "destination_lsb": 1}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}],
+      "intentionally_ignored_fields": []
+    },
+    "u": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 20, "interpretation": "unsigned", "pieces": [{"field": "imm20", "field_lsb": 0, "width": 20, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}],
+      "intentionally_ignored_fields": []
+    },
+    "jump": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 21, "interpretation": "signed", "pieces": [{"field": "jimm20", "field_lsb": 19, "width": 1, "destination_lsb": 20}, {"field": "jimm20", "field_lsb": 0, "width": 8, "destination_lsb": 12}, {"field": "jimm20", "field_lsb": 8, "width": 1, "destination_lsb": 11}, {"field": "jimm20", "field_lsb": 9, "width": 10, "destination_lsb": 1}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}],
+      "intentionally_ignored_fields": []
+    },
+    "fence": {
+      "operands": [
+        {"name": "pred", "width": 4, "interpretation": "fence_set", "pieces": [{"field": "pred", "field_lsb": 0, "width": 4, "destination_lsb": 0}]},
+        {"name": "succ", "width": 4, "interpretation": "fence_set", "pieces": [{"field": "succ", "field_lsb": 0, "width": 4, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "pred"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "succ"}],
+      "intentionally_ignored_fields": [],
+      "field_constraints": [{"field": "fm", "value": 0}, {"field": "rs1", "value": 0}, {"field": "rd", "value": 0}]
+    },
+    "f_load": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 12, "interpretation": "signed", "pieces": [{"field": "imm12", "field_lsb": 0, "width": 12, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}, {"kind": "literal", "text": "("}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ")"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_store": {
+      "operands": [
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "imm", "width": 12, "interpretation": "signed", "pieces": [{"field": "imm12hi", "field_lsb": 0, "width": 7, "destination_lsb": 5}, {"field": "imm12lo", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rs2"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "imm"}, {"kind": "literal", "text": "("}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ")"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_r": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_r_rm": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rm", "width": 3, "interpretation": "rounding_mode", "pieces": [{"field": "rm", "field_lsb": 0, "width": 3, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rm"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_unary_rm": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rm", "width": 3, "interpretation": "rounding_mode", "pieces": [{"field": "rm", "field_lsb": 0, "width": 3, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rm"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_to_x_rm": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rm", "width": 3, "interpretation": "rounding_mode", "pieces": [{"field": "rm", "field_lsb": 0, "width": 3, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rm"}],
+      "intentionally_ignored_fields": []
+    },
+    "x_to_f_rm": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rm", "width": 3, "interpretation": "rounding_mode", "pieces": [{"field": "rm", "field_lsb": 0, "width": 3, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rm"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_to_x": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}],
+      "intentionally_ignored_fields": []
+    },
+    "x_to_f": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_compare": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "integer_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}],
+      "intentionally_ignored_fields": []
+    },
+    "f_r4_rm": {
+      "operands": [
+        {"name": "rd", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rd", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs1", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs1", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs2", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs2", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rs3", "width": 5, "interpretation": "floating_register", "pieces": [{"field": "rs3", "field_lsb": 0, "width": 5, "destination_lsb": 0}]},
+        {"name": "rm", "width": 3, "interpretation": "rounding_mode", "pieces": [{"field": "rm", "field_lsb": 0, "width": 3, "destination_lsb": 0}]}
+      ],
+      "format_tokens": [{"kind": "mnemonic"}, {"kind": "literal", "text": " "}, {"kind": "operand", "operand": "rd"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs1"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs2"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rs3"}, {"kind": "literal", "text": ", "}, {"kind": "operand", "operand": "rm"}],
+      "intentionally_ignored_fields": []
+    }
+  },
+  "instructions": {
+    "add": {"layout": "r", "display_mnemonic": "add"},
+    "addi": {"layout": "i", "display_mnemonic": "addi"},
+    "and": {"layout": "r", "display_mnemonic": "and"},
+    "andi": {"layout": "i", "display_mnemonic": "andi"},
+    "andn": {"layout": "r", "display_mnemonic": "andn"},
+    "auipc": {"layout": "u", "display_mnemonic": "auipc"},
+    "beq": {"layout": "branch", "display_mnemonic": "beq"},
+    "bge": {"layout": "branch", "display_mnemonic": "bge"},
+    "bgeu": {"layout": "branch", "display_mnemonic": "bgeu"},
+    "blt": {"layout": "branch", "display_mnemonic": "blt"},
+    "bltu": {"layout": "branch", "display_mnemonic": "bltu"},
+    "bne": {"layout": "branch", "display_mnemonic": "bne"},
+    "clz": {"layout": "r_unary", "display_mnemonic": "clz"},
+    "cpop": {"layout": "r_unary", "display_mnemonic": "cpop"},
+    "ctz": {"layout": "r_unary", "display_mnemonic": "ctz"},
+    "div": {"layout": "r", "display_mnemonic": "div"},
+    "divu": {"layout": "r", "display_mnemonic": "divu"},
+    "ebreak": {"layout": "none", "display_mnemonic": "ebreak"},
+    "ecall": {"layout": "none", "display_mnemonic": "ecall"},
+    "fadd_s": {"layout": "f_r_rm", "display_mnemonic": "fadd.s"},
+    "fclass_s": {"layout": "f_to_x", "display_mnemonic": "fclass.s"},
+    "fcvt_s_w": {"layout": "x_to_f_rm", "display_mnemonic": "fcvt.s.w"},
+    "fcvt_s_wu": {"layout": "x_to_f_rm", "display_mnemonic": "fcvt.s.wu"},
+    "fcvt_w_s": {"layout": "f_to_x_rm", "display_mnemonic": "fcvt.w.s"},
+    "fcvt_wu_s": {"layout": "f_to_x_rm", "display_mnemonic": "fcvt.wu.s"},
+    "fdiv_s": {"layout": "f_r_rm", "display_mnemonic": "fdiv.s"},
+    "fence": {"layout": "fence", "display_mnemonic": "fence"},
+    "feq_s": {"layout": "f_compare", "display_mnemonic": "feq.s"},
+    "fle_s": {"layout": "f_compare", "display_mnemonic": "fle.s"},
+    "flt_s": {"layout": "f_compare", "display_mnemonic": "flt.s"},
+    "flw": {"layout": "f_load", "display_mnemonic": "flw"},
+    "fmadd_s": {"layout": "f_r4_rm", "display_mnemonic": "fmadd.s"},
+    "fmax_s": {"layout": "f_r", "display_mnemonic": "fmax.s"},
+    "fmin_s": {"layout": "f_r", "display_mnemonic": "fmin.s"},
+    "fmsub_s": {"layout": "f_r4_rm", "display_mnemonic": "fmsub.s"},
+    "fmul_s": {"layout": "f_r_rm", "display_mnemonic": "fmul.s"},
+    "fmv_w_x": {"layout": "x_to_f", "display_mnemonic": "fmv.w.x"},
+    "fmv_x_w": {"layout": "f_to_x", "display_mnemonic": "fmv.x.w"},
+    "fnmadd_s": {"layout": "f_r4_rm", "display_mnemonic": "fnmadd.s"},
+    "fnmsub_s": {"layout": "f_r4_rm", "display_mnemonic": "fnmsub.s"},
+    "fsgnj_s": {"layout": "f_r", "display_mnemonic": "fsgnj.s"},
+    "fsgnjn_s": {"layout": "f_r", "display_mnemonic": "fsgnjn.s"},
+    "fsgnjx_s": {"layout": "f_r", "display_mnemonic": "fsgnjx.s"},
+    "fsqrt_s": {"layout": "f_unary_rm", "display_mnemonic": "fsqrt.s"},
+    "fsub_s": {"layout": "f_r_rm", "display_mnemonic": "fsub.s"},
+    "fsw": {"layout": "f_store", "display_mnemonic": "fsw"},
+    "jal": {"layout": "jump", "display_mnemonic": "jal"},
+    "jalr": {"layout": "load", "display_mnemonic": "jalr"},
+    "lb": {"layout": "load", "display_mnemonic": "lb"},
+    "lbu": {"layout": "load", "display_mnemonic": "lbu"},
+    "lh": {"layout": "load", "display_mnemonic": "lh"},
+    "lhu": {"layout": "load", "display_mnemonic": "lhu"},
+    "lui": {"layout": "u", "display_mnemonic": "lui"},
+    "lw": {"layout": "load", "display_mnemonic": "lw"},
+    "max": {"layout": "r", "display_mnemonic": "max"},
+    "maxu": {"layout": "r", "display_mnemonic": "maxu"},
+    "min": {"layout": "r", "display_mnemonic": "min"},
+    "minu": {"layout": "r", "display_mnemonic": "minu"},
+    "mul": {"layout": "r", "display_mnemonic": "mul"},
+    "mulh": {"layout": "r", "display_mnemonic": "mulh"},
+    "mulhsu": {"layout": "r", "display_mnemonic": "mulhsu"},
+    "mulhu": {"layout": "r", "display_mnemonic": "mulhu"},
+    "or": {"layout": "r", "display_mnemonic": "or"},
+    "orc_b": {"layout": "r_unary", "display_mnemonic": "orc.b"},
+    "ori": {"layout": "i", "display_mnemonic": "ori"},
+    "orn": {"layout": "r", "display_mnemonic": "orn"},
+    "rem": {"layout": "r", "display_mnemonic": "rem"},
+    "remu": {"layout": "r", "display_mnemonic": "remu"},
+    "rev8_rv32": {"layout": "r_unary", "display_mnemonic": "rev8"},
+    "rol": {"layout": "r", "display_mnemonic": "rol"},
+    "ror": {"layout": "r", "display_mnemonic": "ror"},
+    "rori_rv32": {"layout": "shift", "display_mnemonic": "rori"},
+    "sb": {"layout": "store", "display_mnemonic": "sb"},
+    "sext_b": {"layout": "r_unary", "display_mnemonic": "sext.b"},
+    "sext_h": {"layout": "r_unary", "display_mnemonic": "sext.h"},
+    "sh": {"layout": "store", "display_mnemonic": "sh"},
+    "sll": {"layout": "r", "display_mnemonic": "sll"},
+    "slli": {"layout": "shift", "display_mnemonic": "slli"},
+    "slt": {"layout": "r", "display_mnemonic": "slt"},
+    "slti": {"layout": "i", "display_mnemonic": "slti"},
+    "sltiu": {"layout": "i", "display_mnemonic": "sltiu"},
+    "sltu": {"layout": "r", "display_mnemonic": "sltu"},
+    "sra": {"layout": "r", "display_mnemonic": "sra"},
+    "srai": {"layout": "shift", "display_mnemonic": "srai"},
+    "srl": {"layout": "r", "display_mnemonic": "srl"},
+    "srli": {"layout": "shift", "display_mnemonic": "srli"},
+    "sub": {"layout": "r", "display_mnemonic": "sub"},
+    "sw": {"layout": "store", "display_mnemonic": "sw"},
+    "xnor": {"layout": "r", "display_mnemonic": "xnor"},
+    "xor": {"layout": "r", "display_mnemonic": "xor"},
+    "xori": {"layout": "i", "display_mnemonic": "xori"},
+    "zext_h_rv32": {"layout": "r_unary", "display_mnemonic": "zext.h"}
+  }
+}

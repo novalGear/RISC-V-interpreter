@@ -1,1 +1,3 @@
 /build/
+.opencode/
+__pycache__

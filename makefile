@@ -11,13 +11,18 @@ UPSTREAM_INSTRUCTIONS := $(GENERATED_DIR)/instr_dict.json
 GENERATED_TABLE := $(GENERATED_DIR)/decode_table.cpp
 EXECUTABLE_LIBRARY := $(BUILD_DIR)/libexecutable.a
 DECODER_LIBRARY := $(BUILD_DIR)/libdecoder.a
+CPU_LIBRARY := $(BUILD_DIR)/libcpu.a
 LOADER_OBJECT := $(BUILD_DIR)/elf_loader.o
 CODE_SECTIONS_OBJECT := $(BUILD_DIR)/elf_code_sections.o
 DECODER_OBJECT := $(BUILD_DIR)/decoder.o
 DISASSEMBLER_OBJECT := $(BUILD_DIR)/disassembler.o
 GENERATED_TABLE_OBJECT := $(BUILD_DIR)/decode_table.o
+MEMORY_OBJECT := $(BUILD_DIR)/memory.o
+CPU_OBJECT := $(BUILD_DIR)/cpu.o
+EXECUTION_BINDING_OBJECT := $(BUILD_DIR)/execution_binding.o
 ELF_TEST_BINARY := $(BUILD_DIR)/elf_loader_test
 DECODER_TEST_BINARY := $(BUILD_DIR)/decoder_test
+CPU_TEST_BINARY := $(BUILD_DIR)/cpu_test
 DISASSEMBLER_BINARY := $(BUILD_DIR)/riscv-disassemble
 GENERATOR := tools/decode_table/generate.py
 OPERAND_RECIPES := tools/decode_table/operand_recipes.json
@@ -48,7 +53,7 @@ TASK_ELFS = $(wildcard \
 
 .PHONY: all clean test test-python test-task-elfs test-task-elfs-ready
 
-all: $(EXECUTABLE_LIBRARY) $(DECODER_LIBRARY) $(DISASSEMBLER_BINARY)
+all: $(EXECUTABLE_LIBRARY) $(DECODER_LIBRARY) $(CPU_LIBRARY) $(DISASSEMBLER_BINARY)
 
 $(BUILD_DIR):
 	mkdir -p $@
@@ -90,10 +95,24 @@ $(GENERATED_TABLE_OBJECT): $(GENERATED_TABLE) src/decoder/decode_table.hpp \
 	src/decoder/generated_metadata.hpp src/disassembler/format_table.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+$(MEMORY_OBJECT): src/machine/memory.cpp src/machine/memory.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(CPU_OBJECT): src/cpu/cpu.cpp src/cpu/cpu.hpp src/cpu/execution_binding.hpp \
+	src/machine/memory.hpp src/decoder/decoder.hpp src/decoder/decode_table.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(EXECUTION_BINDING_OBJECT): src/cpu/execution_binding.cpp src/cpu/execution_binding.hpp \
+	src/decoder/decoder.hpp src/decoder/decode_table.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
 $(EXECUTABLE_LIBRARY): $(LOADER_OBJECT) $(CODE_SECTIONS_OBJECT)
 	$(AR) rcs $@ $^
 
 $(DECODER_LIBRARY): $(DECODER_OBJECT) $(DISASSEMBLER_OBJECT) $(GENERATED_TABLE_OBJECT)
+	$(AR) rcs $@ $^
+
+$(CPU_LIBRARY): $(MEMORY_OBJECT) $(CPU_OBJECT) $(EXECUTION_BINDING_OBJECT)
 	$(AR) rcs $@ $^
 
 $(ELF_TEST_BINARY): tests/executable/elf_loader_test.cpp $(EXECUTABLE_LIBRARY)
@@ -102,15 +121,19 @@ $(ELF_TEST_BINARY): tests/executable/elf_loader_test.cpp $(EXECUTABLE_LIBRARY)
 $(DECODER_TEST_BINARY): tests/decoder/decoder_test.cpp $(DECODER_LIBRARY)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< $(DECODER_LIBRARY) -o $@
 
+$(CPU_TEST_BINARY): tests/cpu/cpu_test.cpp $(CPU_LIBRARY) $(DECODER_LIBRARY)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< $(CPU_LIBRARY) $(DECODER_LIBRARY) -o $@
+
 $(DISASSEMBLER_BINARY): src/disassemble_main.cpp $(EXECUTABLE_LIBRARY) $(DECODER_LIBRARY)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< $(EXECUTABLE_LIBRARY) $(DECODER_LIBRARY) -o $@
 
 test-python:
 	$(PYTHON) -m unittest -v tests/tools/test_generate_decode_table.py
 
-test: test-python $(ELF_TEST_BINARY) $(DECODER_TEST_BINARY)
+test: test-python $(ELF_TEST_BINARY) $(DECODER_TEST_BINARY) $(CPU_TEST_BINARY)
 	$(ELF_TEST_BINARY)
 	$(DECODER_TEST_BINARY)
+	$(CPU_TEST_BINARY)
 
 test-task-elfs: $(ELF_TEST_BINARY) $(DISASSEMBLER_BINARY)
 	$(MAKE) -C $(TASK_REPOSITORY)

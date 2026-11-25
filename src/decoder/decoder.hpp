@@ -12,6 +12,12 @@ namespace riscv::decoder {
 class InstructionId;
 }
 
+namespace riscv::cpu::internal {
+struct ExecutionBinding;
+
+const ExecutionBinding &ExecutionBindingFor (decoder::InstructionId Id);
+}
+
 namespace riscv::disassembler {
 struct InstructionFormat;
 
@@ -31,6 +37,8 @@ private:
   friend const InstructionDescriptor &Describe (InstructionId Id) noexcept;
   friend const disassembler::InstructionFormat &
   disassembler::InstructionFormatFor (InstructionId Id) noexcept;
+  friend const cpu::internal::ExecutionBinding &
+  cpu::internal::ExecutionBindingFor (InstructionId Id);
 
   explicit InstructionId (std::size_t Ordinal) noexcept;
 
